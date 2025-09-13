@@ -1,0 +1,6 @@
+- task: AzureKeyVault@2
+  inputs:
+    azureSubscription: 'AzureSubscription1'
+    KeyVaultName: 'DevDRKeyVault'
+    SecretsFilter: 'DynatraceToken,SqlConnString'
+    RunAsPreJob: true

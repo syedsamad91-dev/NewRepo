@@ -1,0 +1,15 @@
+trigger: none
+
+parameters:
+  - name: triggerSource
+    type: string
+  - name: regionToFailover
+    type: string
+    default: 'South India'
+
+stages:
+- template: templates/health-check.yml
+- template: templates/failover.yml
+  parameters:
+    regionToFailover: ${{ parameters.regionToFailover }}
+- template: templates/validation.yml

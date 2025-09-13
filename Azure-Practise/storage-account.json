@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newname": {
+      "type": "string",
+      "defaultValue": "createstorageaccountvcode",
+      "metadata": {
+        "description": "Name of the storage account"
+      }
+    }
+  },
+  "functions": [],
+  "variables": {
+    "newname": "[parameters('newname')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('newname')]",
+      "type": "Microsoft.Peering/peerings",
+      "apiVersion": "2022-01-01",
+      "tags": {
+        "displayName": "[variables('newname')]"
+      },
+      "location": "[resourceGroup().location]",
+      "kind": "Direct",
+      "sku": {
+        "name": "Storage",
+        "tier": "Premium"
+      },
+      "properties": {}
+    }
+  ],
+  "outputs": {
+    "newname": {
+      "type": "string",
+      "value": "[variables('newname')]"
+    }
+  }
+}

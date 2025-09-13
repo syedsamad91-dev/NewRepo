@@ -1,0 +1,15 @@
+parameters:
+  regionToFailover: ''
+
+stages:
+- stage: Failover
+  condition: eq(variables['triggerFailover'], 'true')
+  jobs:
+  - job: ExecuteFailover
+    steps:
+    - task: AzurePowerShell@5
+      inputs:
+        azureSubscription: 'Your-Service-Connection'
+        ScriptType: 'FilePath'
+        ScriptPath: 'scripts/Failover.ps1'
+        azurePowerShellVersion: 'LatestVersion'
