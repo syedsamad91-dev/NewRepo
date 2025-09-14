@@ -1,15 +1,43 @@
-parameters:
-  regionToFailover: ''
+trigger:
+  - main
 
-stages:
-- stage: Failover
-  condition: eq(variables['triggerFailover'], 'true')
-  jobs:
-  - job: ExecuteFailover
-    steps:
-    - task: AzurePowerShell@5
-      inputs:
-        azureSubscription: 'Your-Service-Connection'
-        ScriptType: 'FilePath'
-        ScriptPath: 'scripts/Failover.ps1'
-        azurePowerShellVersion: 'LatestVersion'
+variables:
+  targetUrl: "https://personalshare91.wixsite.com/abdulsamadcloudsolut"
+  failoverTarget: "https://personalshare91@dev.azure.com/personalshare91/Devops-DR-Failover/_git/NewRepo.git"
+
+jobs:
+- job: HealthCheck
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: PowerShell@2
+    name: CheckHealth
+    inputs:
+      targetType: 'filePath'
+      filePath: 'scripts/Check-UrlHealth.ps1'
+      arguments: "-TargetUrl $(targetUrl)"
+    continueOnError: true
+
+- job: Failover
+  dependsOn: HealthCheck
+  condition: eq(dependencies.HealthCheck.outputs['CheckHealth.result'], 'FAILOVER_REQUIRED')
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: 'scripts/Trigger-Failover.ps1'
+      arguments: "-FailoverTarget $(failoverTarget)"
+
+- job: Notify
+  dependsOn: Failover
+  condition: succeeded()
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: PowerShell@2
+    inputs:
+      targetType: 'filePath'
+      filePath: 'scripts/Notify-Team.ps1'
+      arguments: "-Message 'Failover triggered to $(failoverTarget)'"
