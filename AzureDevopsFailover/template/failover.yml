@@ -3,7 +3,7 @@ trigger:
 
 variables:
   targetUrl: "https://personalshare91.wixsite.com/abdulsamadcloudsolut"
-  failoverTarget: "https://personalshare91@dev.azure.com/personalshare91/Devops-DR-Failover/_git/NewRepo.git"
+  failoverTarget: "https://dev.azure.com/personalshare91/Devops-DR-Failover/_git/NewRepo.git"
 
 jobs:
 - job: HealthCheck
